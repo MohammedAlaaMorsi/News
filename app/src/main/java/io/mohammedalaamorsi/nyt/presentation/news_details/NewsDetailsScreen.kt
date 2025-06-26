@@ -44,7 +44,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -78,6 +80,7 @@ fun NewsDetailsScreen(
                                         .size(48.dp)
                                         .clip(CircleShape)
                                         .background(Color.White)
+                                        .testTag("back_button")
                                         .clickable(
                                             onClick = onNavigateBack,
                                             interactionSource = remember { MutableInteractionSource() },
@@ -115,7 +118,8 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .testTag("no_details_available"),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -133,6 +137,7 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
             .padding(innerPadding)
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
+            .testTag("news_details_content")
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -145,7 +150,8 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
             contentDescription = item.media.firstOrNull()?.caption,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(if (isInListDetailView) 200.dp else 280.dp),
+                .height(if (isInListDetailView) 200.dp else 280.dp)
+                .testTag("news_image"),
             contentScale = ContentScale.Crop
         )
 
@@ -160,7 +166,10 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Card(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .testTag("section_badge")
+                        .semantics(mergeDescendants = true) {},
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
                     ),
@@ -178,7 +187,8 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
                 Spacer(modifier = Modifier.width(12.dp))
                 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.testTag("date_section")
                 ) {
                     Icon(
                         imageVector = Icons.Default.DateRange,
@@ -202,13 +212,17 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
-                lineHeight = MaterialTheme.typography.headlineMedium.lineHeight
+                lineHeight = MaterialTheme.typography.headlineMedium.lineHeight,
+                modifier = Modifier.testTag("news_title")
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .testTag("author_section")
+                    .semantics(mergeDescendants = true) {}
             ) {
                 Icon(
                     imageVector = Icons.Default.Person,
@@ -221,7 +235,8 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
                     text = item.byline,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.outline,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.testTag("author_text")
                 )
             }
 
@@ -233,13 +248,16 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
                 text = item.abstract,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
-                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
+                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight,
+                modifier = Modifier.testTag("news_abstract")
             )
 
             if (item.subsection.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("subsection_card"),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer
                     ),
@@ -266,7 +284,9 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
 
             Spacer(modifier = Modifier.height(20.dp))
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("article_details_card"),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
@@ -310,7 +330,9 @@ fun ItemDetails(innerPadding: PaddingValues, item: Result?, isInListDetailView: 
                 if (caption.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(20.dp))
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("photo_caption_card"),
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer
                         ),

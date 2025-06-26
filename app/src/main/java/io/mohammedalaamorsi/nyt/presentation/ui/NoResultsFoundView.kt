@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import io.mohammedalaamorsi.nyt.R
 
@@ -32,7 +33,8 @@ fun NoResultsFoundView(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .testTag("no_results_view"),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -62,7 +64,10 @@ fun NoResultsFoundView(
 
         if (onRetry != null) {
             Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = onRetry) {
+            Button(
+                onClick = onRetry,
+                modifier = Modifier.testTag("retry_button")
+            ) {
                 Text(stringResource(R.string.try_again))
             }
         }

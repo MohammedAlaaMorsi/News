@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -147,13 +148,16 @@ fun NewsList(
     onItemClicked: (Result) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("news_list"),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(news) { item ->
+        itemsIndexed(news) { index, item ->
             NewsCard(
                 newsItem = item,
+                index = index,
                 onItemClicked = { onItemClicked(it) }
             )
         }
@@ -163,6 +167,7 @@ fun NewsList(
 @Composable
 fun NewsCard(
     newsItem: Result,
+    index: Int = 0,
     onItemClicked: (Result) -> Unit
 ) {
     Card(
@@ -172,7 +177,8 @@ fun NewsCard(
             .clickable(
                 indication = LocalIndication.current,
                 interactionSource = remember { MutableInteractionSource() }
-            ) { onItemClicked(newsItem) },
+            ) { onItemClicked(newsItem) }
+            .testTag("news_card_$index"),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -197,7 +203,8 @@ fun NewsCard(
                 contentDescription = newsItem.media.firstOrNull()?.caption,
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .testTag("news_image"),
                 contentScale = ContentScale.Crop
             )
 
