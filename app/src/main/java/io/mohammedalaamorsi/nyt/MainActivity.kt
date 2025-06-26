@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import io.mohammedalaamorsi.nyt.navigation.RootNavHost
 import io.mohammedalaamorsi.nyt.presentation.theme.NewsTheme
-import org.koin.androidx.compose.KoinAndroidContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,15 +18,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             NewsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    KoinAndroidContext {
-                        RootNavHost(modifier = Modifier.padding(innerPadding))
-                    }
+                    RootNavHost(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
     }
 }
-
 
 
 @Preview(showBackground = true)
