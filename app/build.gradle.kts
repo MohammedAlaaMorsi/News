@@ -10,6 +10,8 @@ plugins {
 }
 
 
+val props = gradleLocalProperties(projectRootDir = rootDir, providers = project.providers)
+
 android {
     namespace = "io.mohammedalaamorsi.nyt"
     compileSdk = 35
@@ -21,6 +23,12 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "NYTIMES_API_KEY",
+            "\"${props["NYTIMES_API_KEY"]}\""
+        )
     }
 
     buildTypes {
