@@ -1,9 +1,12 @@
 package io.mohammedalaamorsi.nyt.data.models
 
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class Result(
     val abstract: String,
@@ -36,4 +39,4 @@ data class Result(
     val updated: String,
     val uri: String,
     val url: String
-)
+): Parcelable

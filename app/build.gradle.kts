@@ -14,12 +14,12 @@ val props = gradleLocalProperties(projectRootDir = rootDir, providers = project.
 
 android {
     namespace = "io.mohammedalaamorsi.nyt"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "io.mohammedalaamorsi.nyt"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose.android)
+    implementation(libs.androidx.adaptive)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation)
     implementation (libs.kotlinx.coroutines.android)
     implementation(libs.koin.android)
     implementation (libs.koin.androidx.compose)
