@@ -1,6 +1,5 @@
 package io.mohammedalaamorsi.nyt.domain
 
-
 import io.mohammedalaamorsi.nyt.data.models.MostPopularApiResponse
 import kotlinx.coroutines.flow.Flow
 

@@ -33,10 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -52,11 +52,10 @@ import io.mohammedalaamorsi.nyt.presentation.ui.NoResultsFoundView
 import io.mohammedalaamorsi.nyt.util.formatDetailDate
 import org.koin.androidx.compose.koinViewModel
 
-
 @Composable
 fun NewsListScreen(
     viewModel: NewsListViewModel = koinViewModel(),
-    onNewsClicked: (Result) -> Unit
+    onNewsClicked: (Result) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -66,22 +65,22 @@ fun NewsListScreen(
         },
         topBar = {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
-        }
+        },
     ) { paddingValues ->
         NewsListContent(
             state = state,
             paddingValues = paddingValues,
-            onEvent = viewModel::onEvent
+            onEvent = viewModel::onEvent,
         ) {
             onNewsClicked(it)
         }
@@ -93,7 +92,7 @@ fun NewsListScreen(
                 is Effect.ShowSnackbarResource -> {
                     snackbarHostState.showSnackbar(
                         message = it.messageRes,
-                        duration = SnackbarDuration.Short
+                        duration = SnackbarDuration.Short,
                     )
                 }
             }
@@ -106,16 +105,15 @@ fun NewsListContent(
     state: NewsUiState,
     paddingValues: PaddingValues,
     onEvent: (NewsEvent) -> Unit,
-    onItemClicked: (Result) -> Unit
+    onItemClicked: (Result) -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize()
+        modifier =
+            Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
     ) {
-
-
         when (state) {
             is NewsUiState.Error -> {
                 ErrorMessage(state.errorMessage)
@@ -128,7 +126,7 @@ fun NewsListContent(
             is NewsUiState.Result -> {
                 NewsList(
                     news = state.data,
-                    onItemClicked = onItemClicked
+                    onItemClicked = onItemClicked,
                 )
             }
 
@@ -138,27 +136,27 @@ fun NewsListContent(
                 }
             }
         }
-
     }
 }
 
 @Composable
 fun NewsList(
     news: List<Result>,
-    onItemClicked: (Result) -> Unit
+    onItemClicked: (Result) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag("news_list"),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .testTag("news_list"),
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         itemsIndexed(news) { index, item ->
             NewsCard(
                 newsItem = item,
                 index = index,
-                onItemClicked = { onItemClicked(it) }
+                onItemClicked = { onItemClicked(it) },
             )
         }
     }
@@ -168,50 +166,55 @@ fun NewsList(
 fun NewsCard(
     newsItem: Result,
     index: Int = 0,
-    onItemClicked: (Result) -> Unit
+    onItemClicked: (Result) -> Unit,
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(
-                indication = LocalIndication.current,
-                interactionSource = remember { MutableInteractionSource() }
-            ) { onItemClicked(newsItem) }
-            .testTag("news_card_$index"),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .clickable(
+                    indication = LocalIndication.current,
+                    interactionSource = remember { MutableInteractionSource() },
+                ) { onItemClicked(newsItem) }
+                .testTag("news_card_$index"),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             // Circular Image at the start
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(
-                        newsItem.media.firstOrNull()?.mediaMetadata?.getOrNull(2)?.url
-                            ?: newsItem.media.firstOrNull()?.mediaMetadata?.firstOrNull()?.url
-                    )
-                    .error(R.drawable.placeholder)
-                    .placeholder(R.drawable.placeholder)
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(
+                            newsItem.media.firstOrNull()?.mediaMetadata?.getOrNull(2)?.url
+                                ?: newsItem.media.firstOrNull()?.mediaMetadata?.firstOrNull()?.url,
+                        )
+                        .error(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = newsItem.media.firstOrNull()?.caption,
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .testTag("news_image"),
-                contentScale = ContentScale.Crop
+                modifier =
+                    Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .testTag("news_image"),
+                contentScale = ContentScale.Crop,
             )
 
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 12.dp),
             ) {
                 Text(
                     text = "${newsItem.publishedDate.formatDetailDate()} • ${newsItem.section}",
@@ -219,7 +222,7 @@ fun NewsCard(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Text(
@@ -229,7 +232,7 @@ fun NewsCard(
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(top = 4.dp),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Text(
@@ -238,7 +241,7 @@ fun NewsCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp),
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Text(
@@ -247,7 +250,7 @@ fun NewsCard(
                     color = MaterialTheme.colorScheme.outline,
                     modifier = Modifier.padding(top = 4.dp),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

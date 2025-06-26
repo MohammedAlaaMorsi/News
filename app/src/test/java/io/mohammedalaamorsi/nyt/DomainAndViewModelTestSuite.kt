@@ -16,16 +16,13 @@ import org.junit.runners.Suite
 @Suite.SuiteClasses(
     // Domain Layer Tests
     GetPopularNewsUseCaseTest::class,
-    
     // ViewModel Tests
     NewsListViewModelTest::class,
     NewsDetailsViewModelTest::class,
-    
     // Utility Tests
     DispatchersProviderTest::class,
     UiTextTest::class,
-    
     // Integration Tests
-    NewsListIntegrationTest::class
+    NewsListIntegrationTest::class,
 )
 class DomainAndViewModelTestSuite

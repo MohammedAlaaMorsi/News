@@ -9,18 +9,17 @@ import io.mohammedalaamorsi.nyt.data.models.Result
  * Test data factory for creating mock objects used in unit tests
  */
 object TestDataFactory {
-
     fun createMockMediaMetadata(
         format: String = "mediumThreeByTwo210",
         height: Int = 140,
         url: String = "https://static01.nyt.com/images/test.jpg",
-        width: Int = 210
+        width: Int = 210,
     ): MediaMetadata {
         return MediaMetadata(
             format = format,
             height = height,
             url = url,
-            width = width
+            width = width,
         )
     }
 
@@ -30,7 +29,7 @@ object TestDataFactory {
         copyright: String = "The New York Times",
         mediaMetadata: List<MediaMetadata> = listOf(createMockMediaMetadata()),
         subtype: String = "photo",
-        type: String = "image"
+        type: String = "image",
     ): Media {
         return Media(
             approvedForSyndication = approvedForSyndication,
@@ -38,7 +37,7 @@ object TestDataFactory {
             copyright = copyright,
             mediaMetadata = mediaMetadata,
             subtype = subtype,
-            type = type
+            type = type,
         )
     }
 
@@ -64,7 +63,7 @@ object TestDataFactory {
         subsection: String = "",
         type: String = "Article",
         updated: String = "2025-01-01 12:00:00",
-        uri: String = "nyt://article/test$id"
+        uri: String = "nyt://article/test$id",
     ): Result {
         return Result(
             abstract = abstract,
@@ -88,7 +87,7 @@ object TestDataFactory {
             type = type,
             updated = updated,
             uri = uri,
-            url = url
+            url = url,
         )
     }
 
@@ -96,13 +95,13 @@ object TestDataFactory {
         results: List<Result> = listOf(createMockResult()),
         numResults: Int = results.size,
         copyright: String = "Copyright (c) 2025 The New York Times Company.",
-        status: String = "OK"
+        status: String = "OK",
     ): MostPopularApiResponse {
         return MostPopularApiResponse(
             copyright = copyright,
             numResults = numResults,
             results = results,
-            status = status
+            status = status,
         )
     }
 
@@ -114,9 +113,8 @@ object TestDataFactory {
                 abstract = "Test abstract for article $index",
                 byline = "By Test Author $index",
                 section = if (index % 2 == 0) "Technology" else "Sports",
-                publishedDate = "2025-01-${String.format("%02d", index)}"
+                publishedDate = "2025-01-${String.format("%02d", index)}",
             )
         }
     }
-
 }

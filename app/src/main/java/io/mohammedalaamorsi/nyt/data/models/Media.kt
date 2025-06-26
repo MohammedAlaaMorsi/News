@@ -1,6 +1,5 @@
 package io.mohammedalaamorsi.nyt.data.models
 
-
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -16,5 +15,5 @@ data class Media(
     @SerialName("media-metadata")
     val mediaMetadata: List<MediaMetadata>,
     val subtype: String,
-    val type: String
-):Parcelable
+    val type: String,
+) : Parcelable

@@ -7,8 +7,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ktlint)
 }
-
 
 val props = gradleLocalProperties(projectRootDir = rootDir, providers = project.providers)
 
@@ -27,7 +27,7 @@ android {
         buildConfigField(
             "String",
             "NYTIMES_API_KEY",
-            "\"${props["NYTIMES_API_KEY"]}\""
+            "\"${props["NYTIMES_API_KEY"]}\"",
         )
     }
 
@@ -36,9 +36,8 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
-
         }
     }
     compileOptions {
@@ -51,6 +50,20 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+ktlint {
+    android = true
+    ignoreFailures = false
+    reporters {
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.JSON)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.HTML)
+    }
+    filter {
+        exclude("**/generated/**")
+        exclude("**/build/**")
     }
 }
 
@@ -73,9 +86,9 @@ dependencies {
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)
     implementation(libs.androidx.adaptive.navigation)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.koin.android)
-    implementation (libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.compose)
     implementation(libs.coil.compose)
     implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.android)
@@ -89,7 +102,7 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.truth)
-    
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

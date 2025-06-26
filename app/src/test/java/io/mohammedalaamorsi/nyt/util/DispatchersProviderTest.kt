@@ -6,7 +6,6 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import org.junit.Test
 
 class DispatchersProviderTest {
-
     @Test
     fun `should provide correct default dispatchers`() {
         // Given
@@ -24,11 +23,12 @@ class DispatchersProviderTest {
     fun `should allow overriding dispatchers in test implementation`() {
         // Given
         val testDispatcher = StandardTestDispatcher()
-        val testDispatchersProvider = object : DispatchersProvider() {
-            override val main = testDispatcher
-            override val io = testDispatcher
-            override val default = testDispatcher
-        }
+        val testDispatchersProvider =
+            object : DispatchersProvider() {
+                override val main = testDispatcher
+                override val io = testDispatcher
+                override val default = testDispatcher
+            }
 
         // Then
         assertThat(testDispatchersProvider.main).isEqualTo(testDispatcher)

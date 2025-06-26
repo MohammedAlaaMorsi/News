@@ -5,7 +5,6 @@ import io.mohammedalaamorsi.nyt.R
 import org.junit.Test
 
 class UiTextTest {
-
     @Test
     fun `DynamicString should return correct text`() {
         // Given

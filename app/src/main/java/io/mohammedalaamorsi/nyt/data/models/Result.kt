@@ -1,6 +1,5 @@
 package io.mohammedalaamorsi.nyt.data.models
 
-
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
@@ -15,7 +14,7 @@ data class Result(
     @SerialName("asset_id")
     val assetId: Long,
     val byline: String,
-    val column: String?=null,
+    val column: String? = null,
     @SerialName("des_facet")
     val desFacet: List<String>,
     @SerialName("eta_id")
@@ -38,5 +37,5 @@ data class Result(
     val type: String,
     val updated: String,
     val uri: String,
-    val url: String
-): Parcelable
+    val url: String,
+) : Parcelable

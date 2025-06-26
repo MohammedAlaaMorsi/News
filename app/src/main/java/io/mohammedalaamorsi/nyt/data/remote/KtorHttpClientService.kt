@@ -10,12 +10,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
-
 class KtorHttpClientService(
     private val httpClientProvider: HttpClientProvider,
     private val json: Json,
 ) {
-
     fun <T> loadRemoteData(
         apiPath: String,
         serializer: KSerializer<T>,
@@ -23,9 +21,10 @@ class KtorHttpClientService(
         return flow {
             val httpClient = httpClientProvider.httpClientImp
 
-            val response: HttpResponse = httpClient.get(apiPath) {
-                contentType(ContentType.Application.Json)
-            }
+            val response: HttpResponse =
+                httpClient.get(apiPath) {
+                    contentType(ContentType.Application.Json)
+                }
 
             val responseBody: String = response.body()
             val parsedData: T = json.decodeFromString(serializer, responseBody)

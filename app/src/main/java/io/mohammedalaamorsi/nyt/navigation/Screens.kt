@@ -17,6 +17,6 @@ sealed interface Screens {
     @Parcelize
     @Serializable
     data class NewsDetails(
-        val item: Result
+        val item: Result,
     ) : Screens, Parcelable
 }

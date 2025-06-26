@@ -11,8 +11,8 @@ import com.google.common.truth.Truth.assertThat
 import io.mohammedalaamorsi.nyt.data.models.Result
 import io.mohammedalaamorsi.nyt.presentation.states.NewsUiState
 import io.mohammedalaamorsi.nyt.presentation.states.events.NewsEvent
-import io.mohammedalaamorsi.nyt.testutils.TestDataFactory
 import io.mohammedalaamorsi.nyt.presentation.theme.NewsTheme
+import io.mohammedalaamorsi.nyt.testutils.TestDataFactory
 import io.mohammedalaamorsi.nyt.util.UiText
 import org.junit.Rule
 import org.junit.Test
@@ -20,7 +20,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class NewsListScreenUITest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -37,7 +36,7 @@ class NewsListScreenUITest {
                 state = loadingState,
                 paddingValues = androidx.compose.foundation.layout.PaddingValues(),
                 onEvent = {},
-                onItemClicked = {}
+                onItemClicked = {},
             )
         }
 
@@ -57,7 +56,7 @@ class NewsListScreenUITest {
                 state = errorState,
                 paddingValues = androidx.compose.foundation.layout.PaddingValues(),
                 onEvent = {},
-                onItemClicked = {}
+                onItemClicked = {},
             )
         }
 
@@ -83,16 +82,16 @@ class NewsListScreenUITest {
                 state = emptyState,
                 paddingValues = androidx.compose.foundation.layout.PaddingValues(),
                 onEvent = onEvent,
-                onItemClicked = {}
+                onItemClicked = {},
             )
         }
 
         // Then
         composeTestRule.onNodeWithTag("no_results_view").assertIsDisplayed()
-        
+
         // When - Click retry button
         composeTestRule.onNodeWithTag("retry_button").performClick()
-        
+
         // Then - Event should be triggered
         assertThat(eventTriggered).isTrue()
     }
@@ -108,7 +107,7 @@ class NewsListScreenUITest {
                 state = resultState,
                 paddingValues = androidx.compose.foundation.layout.PaddingValues(),
                 onEvent = {},
-                onItemClicked = {}
+                onItemClicked = {},
             )
         }
 
@@ -129,7 +128,7 @@ class NewsListScreenUITest {
         composeTestRule.setContent {
             NewsList(
                 news = newsItems,
-                onItemClicked = {}
+                onItemClicked = {},
             )
         }
 
@@ -157,7 +156,7 @@ class NewsListScreenUITest {
             NewsTheme {
                 NewsList(
                     news = newsItems,
-                    onItemClicked = onItemClicked
+                    onItemClicked = onItemClicked,
                 )
             }
         }
@@ -172,14 +171,15 @@ class NewsListScreenUITest {
     @Test
     fun newsCard_displaysCorrectContent() {
         // Given
-        val newsItem = TestDataFactory.createMockResult(
-            id = 1,
-            title = "Test News Title",
-            abstract = "Test news abstract content",
-            byline = "By Test Author",
-            section = "Technology",
-            publishedDate = "2025-01-15"
-        )
+        val newsItem =
+            TestDataFactory.createMockResult(
+                id = 1,
+                title = "Test News Title",
+                abstract = "Test news abstract content",
+                byline = "By Test Author",
+                section = "Technology",
+                publishedDate = "2025-01-15",
+            )
 
         // When
         composeTestRule.setContent {
@@ -187,7 +187,7 @@ class NewsListScreenUITest {
                 NewsCard(
                     newsItem = newsItem,
                     index = 0,
-                    onItemClicked = {}
+                    onItemClicked = {},
                 )
             }
         }
@@ -210,7 +210,7 @@ class NewsListScreenUITest {
                 NewsCard(
                     newsItem = newsItem,
                     index = 0,
-                    onItemClicked = {}
+                    onItemClicked = {},
                 )
             }
         }
@@ -234,7 +234,7 @@ class NewsListScreenUITest {
                 NewsCard(
                     newsItem = newsItem,
                     index = 0,
-                    onItemClicked = onItemClicked
+                    onItemClicked = onItemClicked,
                 )
             }
         }
@@ -258,7 +258,7 @@ class NewsListScreenUITest {
                 NewsCard(
                     newsItem = newsItem,
                     index = 0,
-                    onItemClicked = {}
+                    onItemClicked = {},
                 )
             }
         }
@@ -278,7 +278,7 @@ class NewsListScreenUITest {
                 NewsCard(
                     newsItem = newsItemWithoutMedia,
                     index = 0,
-                    onItemClicked = {}
+                    onItemClicked = {},
                 )
             }
         }
@@ -290,12 +290,17 @@ class NewsListScreenUITest {
     @Test
     fun newsCard_truncatesLongText_correctly() {
         // Given
-        val longTitle = "This is a very long news title that should be truncated after two lines to ensure proper UI layout and readability"
-        val longAbstract = "This is a very long abstract that should be truncated after two lines to maintain the card layout and prevent overflow issues in the user interface"
-        val newsItem = TestDataFactory.createMockResult(
-            title = longTitle,
-            abstract = longAbstract
-        )
+        val longTitle =
+            "This is a very long news title that should be truncated after two lines " +
+                "to ensure proper UI layout and readability"
+        val longAbstract =
+            "This is a very long abstract that should be truncated after two lines " +
+                "to maintain the card layout and prevent overflow issues in the user interface"
+        val newsItem =
+            TestDataFactory.createMockResult(
+                title = longTitle,
+                abstract = longAbstract,
+            )
 
         // When
         composeTestRule.setContent {
@@ -303,7 +308,7 @@ class NewsListScreenUITest {
                 NewsCard(
                     newsItem = newsItem,
                     index = 0,
-                    onItemClicked = {}
+                    onItemClicked = {},
                 )
             }
         }
@@ -316,10 +321,11 @@ class NewsListScreenUITest {
     @Test
     fun newsCard_displaysFormattedDate_correctly() {
         // Given
-        val newsItem = TestDataFactory.createMockResult(
-            publishedDate = "2025-01-15",
-            section = "Technology"
-        )
+        val newsItem =
+            TestDataFactory.createMockResult(
+                publishedDate = "2025-01-15",
+                section = "Technology",
+            )
 
         // When
         composeTestRule.setContent {
@@ -327,14 +333,14 @@ class NewsListScreenUITest {
                 NewsCard(
                     newsItem = newsItem,
                     index = 0,
-                    onItemClicked = {}
+                    onItemClicked = {},
                 )
             }
         }
 
         // Then - Should display formatted date with section
         composeTestRule.onNode(
-            androidx.compose.ui.test.hasText("Technology", substring = true)
+            androidx.compose.ui.test.hasText("Technology", substring = true),
         ).assertIsDisplayed()
     }
 }

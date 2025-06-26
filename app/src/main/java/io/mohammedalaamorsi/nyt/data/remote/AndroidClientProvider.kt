@@ -12,16 +12,18 @@ import kotlinx.serialization.json.Json
 
 class AndroidClientProvider : HttpClientProvider {
     override val httpClientImp: HttpClient
-        get() = HttpClient(Android) {
-            install(Logging) {
-                logger = Logger.ANDROID
-                level = LogLevel.HEADERS
-            }
-            install(ContentNegotiation) {
-                val json = Json {
-                    ignoreUnknownKeys = true
+        get() =
+            HttpClient(Android) {
+                install(Logging) {
+                    logger = Logger.ANDROID
+                    level = LogLevel.HEADERS
                 }
-                json(json)
+                install(ContentNegotiation) {
+                    val json =
+                        Json {
+                            ignoreUnknownKeys = true
+                        }
+                    json(json)
+                }
             }
-        }
 }

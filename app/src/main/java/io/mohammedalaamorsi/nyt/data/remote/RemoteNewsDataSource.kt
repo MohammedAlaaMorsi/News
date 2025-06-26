@@ -10,7 +10,7 @@ class RemoteNewsDataSource(
     fun getPopularNews(daysPeriod: Int): Flow<MostPopularApiResponse> {
         return ktorHttpClientService.loadRemoteData(
             apiPath = urlsProvider.getPopularNews(daysPeriod = daysPeriod),
-            serializer = MostPopularApiResponse.serializer()
+            serializer = MostPopularApiResponse.serializer(),
         )
     }
 }

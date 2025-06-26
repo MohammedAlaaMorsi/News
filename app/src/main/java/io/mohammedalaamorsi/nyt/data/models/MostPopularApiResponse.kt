@@ -1,6 +1,5 @@
 package io.mohammedalaamorsi.nyt.data.models
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,5 +9,5 @@ data class MostPopularApiResponse(
     @SerialName("num_results")
     val numResults: Int,
     val results: List<Result>,
-    val status: String
+    val status: String,
 )

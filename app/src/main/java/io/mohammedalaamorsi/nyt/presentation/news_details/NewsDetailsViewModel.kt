@@ -7,11 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
-
 class NewsDetailsViewModel(
     item: Result,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(NewsDetailsUiState())
     val state: StateFlow<NewsDetailsUiState> = _state
 
@@ -24,5 +22,4 @@ class NewsDetailsViewModel(
             it.copy(item = item)
         }
     }
-
 }

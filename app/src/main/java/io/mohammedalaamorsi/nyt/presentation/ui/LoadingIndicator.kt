@@ -14,10 +14,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LoadingIndicator() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag("loading_indicator"),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .testTag("loading_indicator"),
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(40.dp),

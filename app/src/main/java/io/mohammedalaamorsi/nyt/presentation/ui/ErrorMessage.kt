@@ -13,15 +13,16 @@ import io.mohammedalaamorsi.nyt.util.UiText
 @Composable
 fun ErrorMessage(message: UiText) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag("error_message"),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .testTag("error_message"),
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = message.asString(),
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.error
+            color = MaterialTheme.colorScheme.error,
         )
     }
 }

@@ -21,21 +21,21 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class NewsDetailsScreenUITest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Test
     fun newsDetailsScreen_withValidItem_displaysAllContent() {
         // Given
-        val testResult = TestDataFactory.createMockResult().copy(
-            title = "Test News Title",
-            abstract = "Test news abstract content",
-            byline = "By Test Author",
-            section = "Technology",
-            subsection = "Apps",
-            publishedDate = "2023-12-01"
-        )
+        val testResult =
+            TestDataFactory.createMockResult().copy(
+                title = "Test News Title",
+                abstract = "Test news abstract content",
+                byline = "By Test Author",
+                section = "Technology",
+                subsection = "Apps",
+                publishedDate = "2023-12-01",
+            )
         val viewModel = NewsDetailsViewModel(testResult)
 
         // When
@@ -43,7 +43,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 NewsDetailsScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { }
+                    onNavigateBack = { },
                 )
             }
         }
@@ -69,7 +69,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 ItemDetails(
                     innerPadding = PaddingValues(0.dp),
-                    item = null
+                    item = null,
                 )
             }
         }
@@ -90,7 +90,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 NewsDetailsScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { backPressed = true }
+                    onNavigateBack = { backPressed = true },
                 )
             }
         }
@@ -114,7 +114,7 @@ class NewsDetailsScreenUITest {
                 NewsDetailsScreen(
                     viewModel = viewModel,
                     onNavigateBack = { },
-                    isInListDetailView = true
+                    isInListDetailView = true,
                 )
             }
         }
@@ -135,7 +135,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 NewsDetailsScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { }
+                    onNavigateBack = { },
                 )
             }
         }
@@ -148,24 +148,28 @@ class NewsDetailsScreenUITest {
     @Test
     fun newsDetailsScreen_withEmptyPhotoCaption_hidesPhotoCaptionCard() {
         // Given
-        val mediaWithoutCaption = Media(
-            type = "image",
-            subtype = "photo",
-            caption = "", // Empty caption
-            copyright = "Test Copyright",
-            approvedForSyndication = 1,
-            mediaMetadata = listOf(
-                MediaMetadata(
-                    url = "https://example.com/image.jpg",
-                    format = "mediumThreeByTwo440",
-                    height = 293,
-                    width = 440
-                )
+        val mediaWithoutCaption =
+            Media(
+                type = "image",
+                subtype = "photo",
+                // Empty caption
+                caption = "",
+                copyright = "Test Copyright",
+                approvedForSyndication = 1,
+                mediaMetadata =
+                    listOf(
+                        MediaMetadata(
+                            url = "https://example.com/image.jpg",
+                            format = "mediumThreeByTwo440",
+                            height = 293,
+                            width = 440,
+                        ),
+                    ),
             )
-        )
-        val testResult = TestDataFactory.createMockResult().copy(
-            media = listOf(mediaWithoutCaption)
-        )
+        val testResult =
+            TestDataFactory.createMockResult().copy(
+                media = listOf(mediaWithoutCaption),
+            )
         val viewModel = NewsDetailsViewModel(testResult)
 
         // When
@@ -173,7 +177,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 NewsDetailsScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { }
+                    onNavigateBack = { },
                 )
             }
         }
@@ -186,24 +190,27 @@ class NewsDetailsScreenUITest {
     @Test
     fun newsDetailsScreen_withPhotoCaption_showsPhotoCaptionCard() {
         // Given
-        val mediaWithCaption = Media(
-            type = "image",
-            subtype = "photo",
-            caption = "Test photo caption",
-            copyright = "Test Copyright",
-            approvedForSyndication = 1,
-            mediaMetadata = listOf(
-                MediaMetadata(
-                    url = "https://example.com/image.jpg",
-                    format = "mediumThreeByTwo440",
-                    height = 293,
-                    width = 440
-                )
+        val mediaWithCaption =
+            Media(
+                type = "image",
+                subtype = "photo",
+                caption = "Test photo caption",
+                copyright = "Test Copyright",
+                approvedForSyndication = 1,
+                mediaMetadata =
+                    listOf(
+                        MediaMetadata(
+                            url = "https://example.com/image.jpg",
+                            format = "mediumThreeByTwo440",
+                            height = 293,
+                            width = 440,
+                        ),
+                    ),
             )
-        )
-        val testResult = TestDataFactory.createMockResult().copy(
-            media = listOf(mediaWithCaption)
-        )
+        val testResult =
+            TestDataFactory.createMockResult().copy(
+                media = listOf(mediaWithCaption),
+            )
         val viewModel = NewsDetailsViewModel(testResult)
 
         // When
@@ -211,7 +218,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 NewsDetailsScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { }
+                    onNavigateBack = { },
                 )
             }
         }
@@ -231,7 +238,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 NewsDetailsScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { }
+                    onNavigateBack = { },
                 )
             }
         }
@@ -244,7 +251,7 @@ class NewsDetailsScreenUITest {
     @Test
     fun newsDetailsScreen_displaysAuthorInformation() {
         // Given - Use "By Test Author" which matches the default mock data
-        val testResult = TestDataFactory.createMockResult()  // Uses default byline "By Test Author"
+        val testResult = TestDataFactory.createMockResult() // Uses default byline "By Test Author"
 
         // When - Test ItemDetails directly instead of through the ViewModel
         composeTestRule.setContent {
@@ -252,7 +259,7 @@ class NewsDetailsScreenUITest {
                 ItemDetails(
                     innerPadding = PaddingValues(0.dp),
                     item = testResult,
-                    isInListDetailView = true
+                    isInListDetailView = true,
                 )
             }
         }
@@ -264,12 +271,13 @@ class NewsDetailsScreenUITest {
     @Test
     fun itemDetails_withCompleteData_showsAllSections() {
         // Given
-        val testResult = TestDataFactory.createMockResult().copy(
-            desFacet = listOf("Technology", "Innovation"),
-            geoFacet = listOf("New York", "California"),
-            orgFacet = listOf("Apple", "Google"),
-            perFacet = listOf("Tim Cook", "Sundar Pichai")
-        )
+        val testResult =
+            TestDataFactory.createMockResult().copy(
+                desFacet = listOf("Technology", "Innovation"),
+                geoFacet = listOf("New York", "California"),
+                orgFacet = listOf("Apple", "Google"),
+                perFacet = listOf("Tim Cook", "Sundar Pichai"),
+            )
         val viewModel = NewsDetailsViewModel(testResult)
 
         // When
@@ -277,7 +285,7 @@ class NewsDetailsScreenUITest {
             NewsTheme {
                 NewsDetailsScreen(
                     viewModel = viewModel,
-                    onNavigateBack = { }
+                    onNavigateBack = { },
                 )
             }
         }

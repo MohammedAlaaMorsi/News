@@ -1,0 +1,19 @@
+# This file is used to configure ktlint for the project
+# For more information about ktlint configuration, see:
+# https://pinterest.github.io/ktlint/latest/rules/configuration-ktlint/
+
+# Disable rules that might be too strict for Android projects
+disabled_rules=filename,package-name
+
+# Configure specific rules
+ktlint_standard_max-line-length=120
+ktlint_standard_trailing-comma-on-call-site=true
+ktlint_standard_trailing-comma-on-declaration-site=true
+
+# Allow wildcard imports for common Android packages
+ij_kotlin_name_count_to_use_star_import=5
+ij_kotlin_name_count_to_use_star_import_for_members=3
+
+# Android specific configuration
+ktlint_standard_import-ordering=true
+ktlint_standard_no-wildcard-imports=false

@@ -10,9 +10,7 @@ class GetPopularNewsUseCase(
     private val newsRepository: NewsRepository,
     private val dispatchersProvider: DispatchersProvider,
 ) {
-    suspend operator fun invoke(
-        daysPeriod: Int,
-    ): Flow<MostPopularApiResponse> {
+    suspend operator fun invoke(daysPeriod: Int): Flow<MostPopularApiResponse> {
         return newsRepository
             .getPopularNews(daysPeriod = daysPeriod)
             .flowOn(dispatchersProvider.io)

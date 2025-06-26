@@ -40,24 +40,26 @@ fun AdaptiveNewsScreen() {
                         scope.launch {
                             scaffoldNavigator.navigateTo(
                                 ListDetailPaneScaffoldRole.Detail,
-                                item
+                                item,
                             )
                         }
-                    }
+                    },
                 )
             }
         },
         detailPane = {
             AnimatedPane {
                 scaffoldNavigator.currentDestination?.contentKey?.let { newsItem ->
-                    val newsDetailsViewModel = koinViewModel<NewsDetailsViewModel>(
-                        key = "newsDetail_${newsItem.id}" // Use unique key based on news item ID
-                    ) {
-                        parametersOf(newsItem)
-                    }
-                    
+                    val newsDetailsViewModel =
+                        koinViewModel<NewsDetailsViewModel>(
+                            // Use unique key based on news item ID
+                            key = "newsDetail_${newsItem.id}",
+                        ) {
+                            parametersOf(newsItem)
+                        }
+
                     val isDualPane = scaffoldNavigator.scaffoldDirective.maxHorizontalPartitions > 1
-                    
+
                     NewsDetailsScreen(
                         viewModel = newsDetailsViewModel,
                         isInListDetailView = isDualPane,
@@ -65,22 +67,22 @@ fun AdaptiveNewsScreen() {
                             scope.launch {
                                 scaffoldNavigator.navigateBack()
                             }
-                        }
+                        },
                     )
                 } ?: run {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = stringResource(R.string.select_a_news_article_to_read),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(16.dp),
                         )
                     }
                 }
             }
-        }
+        },
     )
 }

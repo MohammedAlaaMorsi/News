@@ -15,11 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import io.mohammedalaamorsi.nyt.R
 
@@ -28,21 +28,22 @@ fun NoResultsFoundView(
     modifier: Modifier = Modifier,
     title: String = stringResource(R.string.no_results_found),
     subtitle: String = "",
-    onRetry: (() -> Unit)? = null
+    onRetry: (() -> Unit)? = null,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp)
-            .testTag("no_results_view"),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .padding(24.dp)
+                .testTag("no_results_view"),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Optional Lottie animation or Icon
         Icon(
-             painter = painterResource(R.drawable.not_found),
+            painter = painterResource(R.drawable.not_found),
             contentDescription = stringResource(R.string.not_found_icon_description),
-            modifier = Modifier.size(96.dp)
+            modifier = Modifier.size(96.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -50,7 +51,7 @@ fun NoResultsFoundView(
         Text(
             text = title,
             style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -59,14 +60,14 @@ fun NoResultsFoundView(
             text = subtitle,
             style = MaterialTheme.typography.headlineSmall,
             color = Color.Gray,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
 
         if (onRetry != null) {
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 onClick = onRetry,
-                modifier = Modifier.testTag("retry_button")
+                modifier = Modifier.testTag("retry_button"),
             ) {
                 Text(stringResource(R.string.try_again))
             }

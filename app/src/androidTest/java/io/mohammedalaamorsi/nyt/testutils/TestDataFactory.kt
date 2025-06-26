@@ -2,25 +2,23 @@ package io.mohammedalaamorsi.nyt.testutils
 
 import io.mohammedalaamorsi.nyt.data.models.Media
 import io.mohammedalaamorsi.nyt.data.models.MediaMetadata
-import io.mohammedalaamorsi.nyt.data.models.MostPopularApiResponse
 import io.mohammedalaamorsi.nyt.data.models.Result
 
 /**
  * Test data factory for creating mock objects used in UI tests
  */
 object TestDataFactory {
-
     fun createMockMediaMetadata(
         format: String = "mediumThreeByTwo210",
         height: Int = 140,
         url: String = "https://static01.nyt.com/images/test.jpg",
-        width: Int = 210
+        width: Int = 210,
     ): MediaMetadata {
         return MediaMetadata(
             format = format,
             height = height,
             url = url,
-            width = width
+            width = width,
         )
     }
 
@@ -30,7 +28,7 @@ object TestDataFactory {
         copyright: String = "The New York Times",
         mediaMetadata: List<MediaMetadata> = listOf(createMockMediaMetadata()),
         subtype: String = "photo",
-        type: String = "image"
+        type: String = "image",
     ): Media {
         return Media(
             approvedForSyndication = approvedForSyndication,
@@ -38,7 +36,7 @@ object TestDataFactory {
             copyright = copyright,
             mediaMetadata = mediaMetadata,
             subtype = subtype,
-            type = type
+            type = type,
         )
     }
 
@@ -64,7 +62,7 @@ object TestDataFactory {
         perFacet: List<String> = emptyList(),
         source: String = "New York Times",
         subsection: String = "",
-        type: String = "Article"
+        type: String = "Article",
     ): Result {
         return Result(
             id = id,
@@ -88,7 +86,7 @@ object TestDataFactory {
             perFacet = perFacet,
             source = source,
             subsection = subsection,
-            type = type
+            type = type,
         )
     }
 
@@ -102,11 +100,8 @@ object TestDataFactory {
                 section = if (index % 2 == 0) "Technology" else "Science",
                 publishedDate = "2023-10-${15 + index}",
                 assetId = 100000000000000L + index,
-                etaId = index
+                etaId = index,
             )
         }
     }
-
-
-
 }

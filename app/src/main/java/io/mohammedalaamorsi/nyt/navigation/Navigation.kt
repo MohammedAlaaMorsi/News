@@ -15,10 +15,8 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.reflect.typeOf
 
-
 @Composable
 fun RootNavHost(modifier: Modifier = Modifier) {
-
     val navHostController = rememberNavController()
 
     NavHost(
@@ -29,31 +27,32 @@ fun RootNavHost(modifier: Modifier = Modifier) {
         composable<Screens.AdaptiveNews> {
             AdaptiveNewsScreen()
         }
-        
+
         composable<Screens.NewsList> {
             NewsListScreen(
                 onNewsClicked = { item ->
                     navHostController.navigate(
-                        Screens.NewsDetails(item)
+                        Screens.NewsDetails(item),
                     )
-                }
+                },
             )
         }
-        
+
         composable<Screens.NewsDetails>(
-            typeMap = mapOf(typeOf<Result>() to ResultNavType)
+            typeMap = mapOf(typeOf<Result>() to ResultNavType),
         ) { backStackEntry ->
             val newsDetails = backStackEntry.toRoute<Screens.NewsDetails>()
 
-            val newsDetailsViewModel = koinViewModel<NewsDetailsViewModel> {
-                parametersOf(newsDetails.item)
-            }
+            val newsDetailsViewModel =
+                koinViewModel<NewsDetailsViewModel> {
+                    parametersOf(newsDetails.item)
+                }
             NewsDetailsScreen(
                 viewModel = newsDetailsViewModel,
                 isInListDetailView = false,
                 onNavigateBack = {
                     navHostController.popBackStack()
-                }
+                },
             )
         }
     }
