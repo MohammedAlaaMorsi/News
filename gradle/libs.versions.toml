@@ -5,6 +5,7 @@ coilCompose = "2.7.0"
 koin = "4.1.0"
 kotlin = "2.1.0"
 ktlint = "12.1.1"
+sonarqube = "6.0.1.5171"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 kotlinxCoroutinesTest = "1.10.2"
@@ -69,3 +70,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
