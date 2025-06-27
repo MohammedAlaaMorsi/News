@@ -19,28 +19,30 @@ plugins {
 
 sonar {
     properties {
-        property("sonar.projectKey", "news-app")
-        property("sonar.projectName", "News App")
+        property("sonar.projectKey", "MohammedAlaaMorsi_News")
+        property("sonar.organization", "mohammedalaamorsi")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.projectName", "News")
         property("sonar.projectVersion", "1.0")
         property("sonar.sourceEncoding", "UTF-8")
         property("sonar.language", "kotlin")
-        
+
         // Source directories
         property("sonar.sources", "app/src/main")
         property("sonar.tests", "app/src/test,app/src/androidTest")
-        
+
         // Kotlin-specific properties
         property("sonar.kotlin.source.version", "2.1")
-        
+
         // Android-specific properties
         property("sonar.android.lint.report", "app/build/reports/lint-results.xml")
-        
+
         // Test reports
         property("sonar.junit.reportPaths", "app/build/test-results/testDebugUnitTest")
         property("sonar.coverage.jacoco.xmlReportPaths", "app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml")
-        
+
         // Exclusions
-        property("sonar.exclusions", 
+        property("sonar.exclusions",
             "**/*Test.kt," +
             "**/*Tests.kt," +
             "**/build/**," +
@@ -48,12 +50,12 @@ sonar {
             "**/*.xml," +
             "**/*.json"
         )
-        
-        property("sonar.test.exclusions", 
+
+        property("sonar.test.exclusions",
             "**/build/**," +
             "**/generated/**"
         )
-        
+
         // Host URL (default to SonarCloud, can be overridden via command line or environment)
         property("sonar.host.url", "https://sonarcloud.io")
     }
