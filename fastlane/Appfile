@@ -1,0 +1,10 @@
+# Appfile for News App
+
+# Application package identifier
+app_identifier("io.mohammedalaamorsi.nyt")
+
+# JSON key file path for Google Play Console (if deploying to Play Store)
+# json_key_file("path/to/your/service-account-key.json")
+
+# Optional: If you have multiple build variants
+# For this app, we'll use debug for testing and release for production

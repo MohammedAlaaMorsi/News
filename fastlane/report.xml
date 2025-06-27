@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.000349119">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="01: Switch to android setup_environment lane" time="0.000134117">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="02: Switch to android check_fastlane_installation lane" time="7.1509e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="03: Switch to android verify_fastlane_plugins lane" time="5.5562e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="04: Switch to android install_dependencies lane" time="5.567e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="05: Switch to android setup_api_key lane" time="5.4902e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: Switch to android test_suite lane" time="5.9545e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: Switch to android clean lane" time="5.5436e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: clean" time="1.029503627">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: Switch to android lint lane" time="0.000185403">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: ktlintCheck" time="10.431086734">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: Switch to android unit_tests lane" time="9.0435e-05">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: testDebugUnitTest" time="11.985350685">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="13: jacocoTestReport" time="1.873036857">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="14: adb devices | grep -v &apos;List of devices&apos; | grep &apos;device$&apos; | wc -l" time="0.003326047">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="15: Switch to android ui_tests lane" time="0.000164417">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="16: adb devices | grep -v &apos;List of devices&apos; | grep &apos;device$&apos; | wc -l" time="0.003210123">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="17: connectedDebugAndroidTest" time="43.564096551">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="18: assembleDebug" time="1.521209601">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="19: Switch to android show_build_artifacts lane" time="0.000119137">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

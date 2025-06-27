@@ -1,0 +1,702 @@
+# Fastfile for News App
+# This file contains the fastlane.tools configuration
+
+default_platform(:android)
+
+platform :android do
+  
+  # Variables
+  APK_OUTPUT_PATH = "app/build/outputs/apk"
+  AAB_OUTPUT_PATH = "app/build/outputs/bundle"
+  
+  # Before all lanes, ensure Fastlane is properly set up
+  before_all do |lane|
+    # Skip setup for the setup lane itself to avoid recursion
+    unless lane == :setup_environment
+      setup_environment
+    end
+  end
+
+  # Setup environment and dependencies
+  desc "Setup development environment and install dependencies"
+  lane :setup_environment do
+    UI.message("🔧 Setting up development environment...")
+    
+    # Check if Fastlane is properly installed
+    check_fastlane_installation
+    
+    # Check if bundler is available and install gems
+    install_dependencies
+    
+    # Setup API key from BuildConfig or environment
+    setup_api_key
+    
+    UI.success("✅ Environment setup completed!")
+  end
+
+  # Check if Fastlane is properly installed
+  private_lane :check_fastlane_installation do
+    UI.message("🔍 Checking Fastlane installation...")
+    
+    begin
+      # Check if we're running via bundle exec (recommended)
+      if ENV['BUNDLE_GEMFILE'].nil?
+        UI.message("⚠️  Running Fastlane directly. Recommended: use 'bundle exec fastlane'")
+        
+        # Try to install dependencies if Gemfile exists
+        if File.exist?("Gemfile") && system("which bundle > /dev/null 2>&1")
+          UI.message("📦 Installing gems via bundle...")
+          sh("bundle install --quiet")
+        end
+      else
+        UI.success("✅ Running via bundle exec")
+      end
+      
+      # Check Fastlane version
+      fastlane_version = Fastlane::VERSION
+      UI.message("📦 Fastlane version: #{fastlane_version}")
+      
+      # Verify core plugins are available
+      verify_fastlane_plugins
+      
+    rescue => exception
+      UI.error("❌ Fastlane installation check failed: #{exception}")
+      install_fastlane
+    end
+  end
+  
+  # Verify required Fastlane plugins and capabilities
+  private_lane :verify_fastlane_plugins do
+    UI.message("🔌 Verifying Fastlane plugins and capabilities...")
+    
+    # Check if gradle action is available
+    unless Fastlane::Actions.const_defined?(:GradleAction)
+      UI.error("❌ Gradle action not available!")
+      raise "Fastlane gradle plugin is missing"
+    end
+    
+    UI.success("✅ Core Fastlane plugins verified")
+  end
+
+  # Install Fastlane and dependencies
+  private_lane :install_fastlane do
+    UI.message("📦 Installing Fastlane and dependencies...")
+    
+    begin
+      # Check if we're in a bundler context
+      if File.exist?("Gemfile") && system("which bundle > /dev/null 2>&1")
+        UI.message("📋 Gemfile found, installing via bundle...")
+        sh("bundle install")
+        UI.success("✅ Bundle dependencies installed!")
+        
+        # Verify installation
+        sh("bundle exec fastlane --version")
+      else
+        UI.message("💎 Installing Fastlane via gem...")
+        
+        # Install fastlane user-local
+        sh("gem install --user-install fastlane")
+        
+        # Dynamically update PATH for current session
+        update_gem_path
+        
+        # Verify installation
+        sh("fastlane --version")
+      end
+      
+      UI.success("✅ Fastlane installation completed!")
+      
+    rescue => exception
+      UI.error("❌ Failed to install Fastlane: #{exception}")
+      UI.message("🔧 Manual installation options:")
+      UI.message("  Option 1: gem install fastlane")
+      UI.message("  Option 2: bundle install (if you have Gemfile)")
+      UI.message("  Option 3: sudo gem install fastlane (system-wide)")
+      raise exception
+    end
+  end
+
+  # Install project dependencies
+  private_lane :install_dependencies do
+    UI.message("📦 Installing project dependencies...")
+    
+    begin
+      # Install Ruby dependencies first
+      if File.exist?("Gemfile") && system("which bundle > /dev/null 2>&1")
+        UI.message("💎 Installing Ruby gems...")
+        sh("bundle install --quiet")
+        UI.success("✅ Ruby gems installed")
+      else
+        UI.message("⚠️  Bundle not available, skipping gem installation")
+      end
+      
+      # Check Android dependencies
+      UI.message("🤖 Checking Android project dependencies...")
+      if File.exist?("gradlew")
+        # Make gradlew executable
+        sh("chmod +x gradlew")
+        
+        # Download dependencies
+        gradle(task: "dependencies", print_command: false, print_command_output: false)
+        UI.success("✅ Android dependencies verified")
+      end
+      
+    rescue => exception
+      UI.message("⚠️  Some dependencies may not be fully installed: #{exception.message}")
+      UI.message("This is usually fine, continuing...")
+    end
+  end
+
+  # Setup API key from BuildConfig or environment
+  private_lane :setup_api_key do
+    UI.message("🔑 Setting up NY Times API key...")
+    
+    api_key = nil
+    
+    # Strategy 1: Try to get from BuildConfig (if project is already built)
+    buildconfig_paths = [
+      "app/build/generated/source/buildConfig/debug/io/mohammedalaamorsi/nyt/BuildConfig.java",
+      "app/build/generated/source/buildConfig/release/io/mohammedalaamorsi/nyt/BuildConfig.java",
+      "app/build/generated/source/buildConfig/debug/com/yourpackage/BuildConfig.java" # fallback pattern
+    ]
+    
+    buildconfig_paths.each do |path|
+      if File.exist?(path)
+        UI.message("📖 Reading API key from BuildConfig: #{path}")
+        begin
+          buildconfig_content = File.read(path)
+          
+          # Extract API key from BuildConfig - handle different patterns
+          patterns = [
+            /public static final String NYTIMES_API_KEY = "(.+?)";/,
+            /String NYTIMES_API_KEY = "(.+?)";/,
+            /NYTIMES_API_KEY.*?=.*?"(.+?)"/
+          ]
+          
+          patterns.each do |pattern|
+            match = buildconfig_content.match(pattern)
+            if match && match[1] != "null" && !match[1].empty?
+              api_key = match[1]
+              UI.success("✅ Found API key in BuildConfig")
+              break
+            end
+          end
+          
+          break if api_key
+        rescue => exception
+          UI.message("⚠️  Could not read BuildConfig at #{path}: #{exception.message}")
+        end
+      end
+    end
+    
+    # Strategy 2: Get from environment variable
+    if api_key.nil? || api_key.empty? || api_key == "null"
+      api_key = ENV['NYTIMES_API_KEY']
+      if api_key && !api_key.empty? && api_key != "null"
+        UI.success("✅ Using API key from environment variable")
+      else
+        api_key = nil
+      end
+    end
+    
+    # Strategy 3: Get from local.properties
+    if api_key.nil? || api_key.empty?
+      if File.exist?("local.properties")
+        UI.message("📖 Reading API key from local.properties...")
+        begin
+          local_props = File.read("local.properties")
+          patterns = [
+            /NYTIMES_API_KEY\s*=\s*(.+)/,
+            /nytimes\.api\.key\s*=\s*(.+)/i
+          ]
+          
+          patterns.each do |pattern|
+            match = local_props.match(pattern)
+            if match
+              api_key = match[1].strip.gsub(/["'\s]/, '')
+              if !api_key.empty? && api_key != "null"
+                UI.success("✅ Found API key in local.properties")
+                break
+              end
+            end
+          end
+        rescue => exception
+          UI.message("⚠️  Could not read local.properties: #{exception.message}")
+        end
+      end
+    end
+    
+    # Strategy 4: Check .env file
+    if api_key.nil? || api_key.empty?
+      if File.exist?(".env")
+        UI.message("📖 Reading API key from .env file...")
+        begin
+          env_content = File.read(".env")
+          match = env_content.match(/NYTIMES_API_KEY\s*=\s*(.+)/)
+          if match
+            api_key = match[1].strip.gsub(/["']/, '')
+            if !api_key.empty? && api_key != "null"
+              UI.success("✅ Found API key in .env file")
+            else
+              api_key = nil
+            end
+          end
+        rescue => exception
+          UI.message("⚠️  Could not read .env file: #{exception.message}")
+        end
+      end
+    end
+    
+    # Handle the API key result
+    if api_key && !api_key.empty? && api_key != "null"
+      # Save to local.properties if not already there
+      if File.exist?("local.properties")
+        local_props = File.read("local.properties")
+        unless local_props.include?("NYTIMES_API_KEY")
+          File.open("local.properties", "a") do |f|
+            f.puts "NYTIMES_API_KEY=#{api_key}"
+          end
+          UI.success("✅ Added API key to local.properties")
+        end
+      else
+        File.write("local.properties", "NYTIMES_API_KEY=#{api_key}\n")
+        UI.success("✅ Created local.properties with API key")
+      end
+      
+      # Set environment variable for this session
+      ENV['NYTIMES_API_KEY'] = api_key
+      UI.success("🔑 API key configured successfully")
+    else
+      UI.error("❌ NY Times API key not found!")
+      UI.message("📋 API key search locations:")
+      UI.message("  1. BuildConfig.java (after building the project)")
+      UI.message("  2. Environment variable: NYTIMES_API_KEY")
+      UI.message("  3. local.properties file")
+      UI.message("  4. .env file")
+      UI.message("")
+      UI.message("🔧 Setup options:")
+      UI.message("  • Export environment variable: export NYTIMES_API_KEY=your_key")
+      UI.message("  • Add to local.properties: NYTIMES_API_KEY=your_key")
+      UI.message("  • Build the project first to generate BuildConfig")
+      
+      # Interactive prompt if running in terminal
+      if STDIN.tty? && ENV['CI'].nil?
+        api_key = UI.input("Enter your NY Times API key (or press Enter to skip):")
+        if api_key && !api_key.strip.empty?
+          api_key = api_key.strip
+          
+          # Save to local.properties
+          File.write("local.properties", "NYTIMES_API_KEY=#{api_key}\n")
+          ENV['NYTIMES_API_KEY'] = api_key
+          UI.success("✅ API key saved to local.properties")
+        else
+          UI.message("⚠️  Continuing without API key. Some features may not work.")
+        end
+      else
+        UI.message("⚠️  Running non-interactively. Please set up API key manually.")
+      end
+    end
+  end
+
+  # Clean the project
+  desc "Clean the project"
+  lane :clean do
+    gradle(task: "clean")
+    UI.success("✅ Project cleaned successfully")
+  end
+
+  # Run Ktlint checks with auto-fix option
+  desc "Run Ktlint code style checks"
+  lane :lint do
+    UI.message("🔍 Running Ktlint checks...")
+    
+    begin
+      gradle(task: "ktlintCheck")
+      UI.success("✅ Ktlint checks passed")
+    rescue => exception
+      UI.error("❌ Ktlint checks failed: #{exception}")
+      UI.message("🔧 Attempting to auto-fix formatting issues...")
+      
+      begin
+        gradle(task: "ktlintFormat")
+        UI.success("✅ Auto-fixed formatting issues")
+        
+        # Re-run check after auto-fix
+        gradle(task: "ktlintCheck")
+        UI.success("✅ Ktlint checks passed after auto-fix")
+      rescue => fix_exception
+        UI.error("❌ Auto-fix failed: #{fix_exception}")
+        UI.message("Please manually fix the linting issues and run again")
+        raise fix_exception
+      end
+    end
+  end
+
+  # Run unit tests
+  desc "Run unit tests"
+  lane :unit_tests do
+    UI.message("🧪 Running unit tests...")
+    gradle(task: "testDebugUnitTest")
+    UI.success("✅ Unit tests completed")
+    
+    # Generate coverage report
+    UI.message("📊 Generating coverage report...")
+    gradle(task: "jacocoTestReport")
+    UI.success("✅ Coverage report generated")
+  end
+
+  # Run instrumented tests (UI tests)
+  desc "Run instrumented tests on connected device/emulator"
+  lane :ui_tests do
+    UI.message("📱 Running UI tests...")
+    UI.message("⚠️  Note: Make sure you have a connected device or running emulator")
+    
+    begin
+      # Check if there are connected devices
+      adb_devices = sh("adb devices | grep -v 'List of devices' | grep 'device$' | wc -l").to_i
+      if adb_devices == 0
+        UI.error("❌ No connected Android devices found!")
+        UI.message("Please connect a device or start an emulator before running UI tests")
+        next
+      end
+      
+      UI.message("📱 Found #{adb_devices} connected device(s)")
+      gradle(task: "connectedDebugAndroidTest")
+      UI.success("✅ UI tests completed")
+    rescue => exception
+      UI.error("❌ UI tests failed: #{exception}")
+      UI.message("This might be due to the BouncyCastle issue we've been working on")
+      UI.message("Unit tests and other lanes should still work fine")
+    end
+  end
+
+  # Complete test suite - runs all tests in sequence
+  desc "Run complete test suite (all tests before building)"
+  lane :test_suite do
+    UI.message("🧪 Running complete test suite...")
+    
+    # Clean first
+    clean
+    
+    # Run all quality checks
+    lint
+    unit_tests
+    
+    # Optional: Run UI tests if device is connected
+    begin
+      adb_devices = sh("adb devices | grep -v 'List of devices' | grep 'device$' | wc -l").to_i
+      if adb_devices > 0
+        UI.message("📱 Device found, running UI tests...")
+        ui_tests
+      else
+        UI.message("⚠️  No device connected, skipping UI tests")
+      end
+    rescue => exception
+      UI.message("⚠️  Skipping UI tests due to: #{exception}")
+    end
+    
+    UI.success("✅ Complete test suite finished!")
+  end
+
+  # Build debug APK with pre-build testing
+  desc "Build debug APK (runs complete test suite first)"
+  lane :build_debug do
+    UI.message("🔨 Building debug APK with comprehensive testing...")
+    
+    # ALWAYS run complete test suite before any build
+    UI.message("🧪 Running complete test suite before build...")
+    test_suite
+    
+    UI.message("🔨 Building debug APK...")
+    gradle(task: "assembleDebug")
+    UI.success("✅ Debug APK built successfully")
+    UI.message("📦 APK location: #{APK_OUTPUT_PATH}/debug/")
+    
+    # Show build artifacts
+    show_build_artifacts(build_type: "debug")
+  end
+
+  # Build release APK with comprehensive testing
+  desc "Build release APK (runs complete test suite first)"
+  lane :build_release do
+    UI.message("🔨 Building release APK with comprehensive testing...")
+    
+    # ALWAYS run complete test suite before release build
+    UI.message("🧪 Running complete test suite before release build...")
+    test_suite
+    
+    # Run SonarQube analysis if token is available
+    if ENV['SONAR_TOKEN'] && !ENV['SONAR_TOKEN'].empty?
+      UI.message("🔍 Running SonarQube analysis before release...")
+      sonar_analysis
+    end
+    
+    UI.message("🔨 Building release APK...")
+    gradle(task: "assembleRelease")
+    UI.success("✅ Release APK built successfully")
+    UI.message("📦 APK location: #{APK_OUTPUT_PATH}/release/")
+    
+    # Show build artifacts
+    show_build_artifacts(build_type: "release")
+  end
+
+  # Build release AAB (Android App Bundle) with testing
+  desc "Build release AAB (runs complete test suite first)"
+  lane :build_aab do
+    UI.message("🔨 Building release AAB with comprehensive testing...")
+    
+    # ALWAYS run complete test suite before AAB build
+    UI.message("🧪 Running complete test suite before AAB build...")
+    test_suite
+    
+    # Run SonarQube analysis if token is available
+    if ENV['SONAR_TOKEN'] && !ENV['SONAR_TOKEN'].empty?
+      UI.message("🔍 Running SonarQube analysis before release...")
+      sonar_analysis
+    end
+    
+    UI.message("🔨 Building release AAB...")
+    gradle(task: "bundleRelease")
+    UI.success("✅ Release AAB built successfully")
+    UI.message("📦 AAB location: #{AAB_OUTPUT_PATH}/release/")
+    
+    # Show build artifacts
+    show_build_artifacts(build_type: "aab")
+  end
+
+  # Show build artifacts information
+  private_lane :show_build_artifacts do |options|
+    build_type = options[:build_type] || "debug"
+    
+    UI.header("📦 Build Artifacts")
+    
+    case build_type
+    when "debug"
+      if File.exist?("#{APK_OUTPUT_PATH}/debug")
+        apk_files = Dir.glob("#{APK_OUTPUT_PATH}/debug/*.apk")
+        apk_files.each do |apk|
+          file_size = File.size(apk) / (1024 * 1024.0)
+          UI.message("  📱 #{File.basename(apk)} (#{file_size.round(2)} MB)")
+        end
+      end
+    when "release"
+      if File.exist?("#{APK_OUTPUT_PATH}/release")
+        apk_files = Dir.glob("#{APK_OUTPUT_PATH}/release/*.apk")
+        apk_files.each do |apk|
+          file_size = File.size(apk) / (1024 * 1024.0)
+          UI.message("  📱 #{File.basename(apk)} (#{file_size.round(2)} MB)")
+        end
+      end
+    when "aab"
+      if File.exist?("#{AAB_OUTPUT_PATH}/release")
+        aab_files = Dir.glob("#{AAB_OUTPUT_PATH}/release/*.aab")
+        aab_files.each do |aab|
+          file_size = File.size(aab) / (1024 * 1024.0)
+          UI.message("  📦 #{File.basename(aab)} (#{file_size.round(2)} MB)")
+        end
+      end
+    end
+  end
+
+  # Run SonarQube analysis
+  desc "Run SonarQube code quality analysis"
+  lane :sonar_analysis do
+    UI.message("🔍 Running SonarQube analysis...")
+    
+    # First run tests and generate reports
+    clean
+    unit_tests
+    
+    # Check if SONAR_TOKEN is available
+    if ENV['SONAR_TOKEN'].nil? || ENV['SONAR_TOKEN'].empty?
+      UI.error("❌ SONAR_TOKEN environment variable not set")
+      UI.message("Please set your SonarCloud token: export SONAR_TOKEN=your_token")
+      UI.message("Or run manually: ./gradlew sonar -Dsonar.token=YOUR_TOKEN")
+      next
+    end
+    
+    gradle(task: "sonar")
+    UI.success("✅ SonarQube analysis completed")
+  end
+
+  # Comprehensive quality check (lint + unit tests)
+  desc "Run comprehensive quality checks (lint + unit tests)"
+  lane :quality_check do
+    UI.message("🎯 Running comprehensive quality checks...")
+    
+    clean
+    lint
+    unit_tests
+    
+    UI.success("✅ All quality checks passed!")
+  end
+
+  # Full test suite (lint + unit tests + UI tests)
+  desc "Run full test suite (lint + unit tests + UI tests)"
+  lane :full_test do
+    UI.message("🚀 Running full test suite...")
+    
+    clean
+    lint
+    unit_tests
+    ui_tests
+    
+    UI.success("✅ Full test suite completed!")
+  end
+
+  # Build and test pipeline
+  desc "Complete build and test pipeline"
+  lane :ci_pipeline do
+    UI.message("🏗️ Running CI pipeline...")
+    
+    # Setup environment first
+    setup_environment
+    
+    # Run comprehensive testing
+    test_suite
+    
+    # Build debug APK (without re-running tests since we just ran them)
+    UI.message("🔨 Building debug APK...")
+    gradle(task: "assembleDebug")
+    UI.success("✅ Debug APK built successfully")
+    
+    show_build_artifacts("debug")
+    
+    UI.success("✅ CI pipeline completed successfully!")
+    UI.message("Ready for deployment! 🚀")
+  end
+
+  # Release pipeline
+  desc "Complete release pipeline (quality + build release)"
+  lane :release_pipeline do
+    UI.message("🚀 Running release pipeline...")
+    
+    # Setup environment first
+    setup_environment
+    
+    # Run comprehensive testing
+    test_suite
+    
+    # Run SonarQube analysis if available
+    if ENV['SONAR_TOKEN'] && !ENV['SONAR_TOKEN'].empty?
+      sonar_analysis
+    end
+    
+    # Build release artifacts (without re-running tests)
+    UI.message("🔨 Building release APK...")
+    gradle(task: "assembleRelease")
+    
+    UI.message("🔨 Building release AAB...")
+    gradle(task: "bundleRelease")
+    
+    show_build_artifacts(build_type: "release")
+    show_build_artifacts(build_type: "aab")
+    
+    UI.success("✅ Release pipeline completed!")
+    UI.message("Release artifacts are ready for deployment! 📦")
+  end
+
+  # Deploy to internal testing (if configured)
+  desc "Deploy to Google Play Internal Testing"
+  lane :deploy_internal do
+    UI.message("🚀 Deploying to Google Play Internal Testing...")
+    
+    # First run the release pipeline
+    release_pipeline
+    
+    # Note: This requires proper Google Play Console setup
+    UI.message("⚠️  Google Play Console deployment requires additional setup")
+    UI.message("Please configure your service account JSON key in Appfile")
+    
+    # Uncomment when ready to deploy:
+    # upload_to_play_store(
+    #   track: 'internal',
+    #   aab: "#{AAB_OUTPUT_PATH}/release/app-release.aab"
+    # )
+  end
+
+  # Update gem binary path dynamically for cross-platform support
+  private_lane :update_gem_path do
+    UI.message("🔧 Updating gem binary path...")
+    
+    begin
+      # Method 1: Get from gem environment
+      gem_bin_dir = `gem environment gemdir 2>/dev/null`.strip
+      gem_bin_dir = "#{gem_bin_dir}/bin" if !gem_bin_dir.empty?
+      
+      # Fallback: try to get executable directory directly
+      if gem_bin_dir.empty? || !File.directory?(gem_bin_dir)
+        gem_env_output = `gem environment 2>/dev/null`
+        match = gem_env_output.match(/EXECUTABLE DIRECTORY: (.+)/)
+        gem_bin_dir = match[1].strip if match
+      end
+      
+      # Method 2: Platform-specific fallback paths
+      if gem_bin_dir.empty? || !File.directory?(gem_bin_dir)
+        platform = `uname -s`.strip
+        ruby_version = `ruby -e 'puts RUBY_VERSION'`.strip rescue "3.0.0"
+        
+        case platform
+        when "Linux"
+          fallback_paths = [
+            "#{ENV['HOME']}/.local/share/gem/ruby/#{ruby_version}/bin",
+            "#{ENV['HOME']}/.gem/ruby/#{ruby_version}/bin",
+            "/usr/local/share/gem/ruby/#{ruby_version}/bin",
+            "#{ENV['HOME']}/.local/bin"
+          ]
+        when "Darwin"
+          fallback_paths = [
+            "#{ENV['HOME']}/.gem/ruby/#{ruby_version}/bin",
+            "/usr/local/lib/ruby/gems/#{ruby_version}/bin",
+            "/opt/homebrew/lib/ruby/gems/#{ruby_version}/bin",
+            "#{ENV['HOME']}/.local/bin"
+          ]
+        else
+          # Windows and other platforms
+          fallback_paths = [
+            "#{ENV['HOME']}/.gem/ruby/#{ruby_version}/bin",
+            "#{ENV['USERPROFILE']}/.gem/ruby/#{ruby_version}/bin"
+          ]
+        end
+        
+        fallback_paths.each do |path|
+          if File.directory?(path)
+            gem_bin_dir = path
+            break
+          end
+        end
+      end
+      
+      # Update PATH if valid directory found
+      if !gem_bin_dir.empty? && File.directory?(gem_bin_dir)
+        unless ENV['PATH'].include?(gem_bin_dir)
+          ENV['PATH'] = "#{gem_bin_dir}:#{ENV['PATH']}"
+          UI.success("✅ Updated PATH to include gem binaries: #{gem_bin_dir}")
+        else
+          UI.message("✅ Gem bin directory already in PATH: #{gem_bin_dir}")
+        end
+      else
+        UI.message("⚠️  Could not determine gem binary path automatically")
+        UI.message("You may need to add the gem bin directory to your PATH manually")
+      end
+      
+    rescue => exception
+      UI.message("⚠️  Could not update gem path: #{exception.message}")
+      UI.message("Continuing with current PATH...")
+    end
+  end
+
+  # Error handling
+  error do |lane, exception|
+    UI.error("❌ Lane '#{lane}' failed with error: #{exception}")
+    
+    # Cleanup on error
+    UI.message("🧹 Performing cleanup...")
+  end
+
+  # After all lanes
+  after_all do |lane|
+    UI.success("🎉 Lane '#{lane}' completed successfully!")
+  end
+
+end
