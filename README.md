@@ -90,11 +90,17 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 
 ### 🔑 API Key Configuration
 
+> **IMPORTANT:** To run this project, you need to add your NY Times API key to the `local.properties` file:
+
+> ```properties
+> NYTIMES_API_KEY=your-key-here
+> ```
+
 The app automatically detects your API key from multiple sources:
 
-1. **BuildConfig** (recommended): Generated after first build
+1. **local.properties** (recommended): `NYTIMES_API_KEY=your_key`
 2. **Environment**: `export NYTIMES_API_KEY=your_key`
-3. **local.properties**: `NYTIMES_API_KEY=your_key`
+3. **BuildConfig**: Generated after first build
 4. **Interactive**: Fastlane will prompt if not found
 
 ## 🤖 Automated Build & Testing
