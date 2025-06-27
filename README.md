@@ -1,7 +1,8 @@
 # NY Times Most Popular Articles - Android App
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/your-repo)
-[![Coverage](https://img.shields.io/badge/coverage-85%25-green)](https://sonarcloud.io/your-project)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/mohammedalaamorsi/news/actions)
+[![Coverage](https://img.shields.io/badge/coverage-85%25-green)](https://sonarcloud.io/dashboard?id=mohammedalaamorsi_news)
+[![Android](https://img.shields.io/badge/Android-7.0%2B-brightgreen.svg?style=flat)](https://developer.android.com/about/versions/android-7.0)
 [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1.0-blue.svg)](https://kotlinlang.org)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)

@@ -5,82 +5,102 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.00052955">
+      <testcase classname="fastlane.lanes" name="00: default_platform" time="0.000449852">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="01: Switch to android setup_environment lane" time="0.000233096">
+      <testcase classname="fastlane.lanes" name="01: Switch to android setup_environment lane" time="0.000300632">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="02: Switch to android check_fastlane_installation lane" time="0.000185036">
+      <testcase classname="fastlane.lanes" name="02: Switch to android check_fastlane_installation lane" time="9.3407e-05">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="03: Switch to android verify_fastlane_plugins lane" time="0.000165527">
+      <testcase classname="fastlane.lanes" name="03: Switch to android verify_fastlane_plugins lane" time="8.557e-05">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="04: Switch to android install_dependencies lane" time="0.000173838">
+      <testcase classname="fastlane.lanes" name="04: Switch to android install_dependencies lane" time="9.1726e-05">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="05: Switch to android setup_api_key lane" time="0.000552948">
+      <testcase classname="fastlane.lanes" name="05: Switch to android setup_api_key lane" time="0.000120232">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="06: Switch to android clean lane" time="0.000114193">
+      <testcase classname="fastlane.lanes" name="06: Switch to android test_suite lane" time="0.000171047">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="07: clean" time="0.930052573">
+      <testcase classname="fastlane.lanes" name="07: Switch to android clean lane" time="0.000109147">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="08: Switch to android lint lane" time="0.000182805">
+      <testcase classname="fastlane.lanes" name="08: clean" time="1.137355253">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="09: ktlintCheck" time="8.417029359">
+      <testcase classname="fastlane.lanes" name="09: Switch to android lint lane" time="0.000207853">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="10: Switch to android unit_tests lane" time="0.000101233">
+      <testcase classname="fastlane.lanes" name="10: ktlintCheck" time="8.004411131">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="11: testDebugUnitTest" time="11.044523509">
+      <testcase classname="fastlane.lanes" name="11: Switch to android unit_tests lane" time="0.000146588">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="12: jacocoTestReport" time="1.61982041">
+      <testcase classname="fastlane.lanes" name="12: testDebugUnitTest" time="12.577529569">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="13: Switch to android ui_tests lane" time="0.000302312">
+      <testcase classname="fastlane.lanes" name="13: jacocoTestReport" time="2.070582749">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="14: adb devices | grep -v &apos;List of devices&apos; | grep &apos;device$&apos; | wc -l" time="0.004845922">
+      <testcase classname="fastlane.lanes" name="14: adb devices | grep -v &apos;List of devices&apos; | grep &apos;device$&apos; | wc -l" time="0.004443093">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="15: connectedDebugAndroidTest" time="51.269559785">
+      <testcase classname="fastlane.lanes" name="15: Switch to android ui_tests lane" time="0.00011315">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="16: adb devices | grep -v &apos;List of devices&apos; | grep &apos;device$&apos; | wc -l" time="0.006932488">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="17: connectedDebugAndroidTest" time="46.953053702">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="18: assembleDebug" time="1.968438808">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="19: Switch to android show_build_artifacts lane" time="0.000162852">
         
       </testcase>
     
